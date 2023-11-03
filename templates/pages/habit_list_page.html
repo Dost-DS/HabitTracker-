@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load habit_completed_tag %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block extrahead %}
+    <!-- Include any additional styles or scripts if needed -->
+{% endblock extrahead %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <!-- Button to trigger the modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#habitModal">
+                Add Habit
+            </button>
+        </div>
+    </div>
+    <h2>Your Habits</h2>
+    <div class="row">
+        <!-- habit_tracker_app/templates/pages/habit_list_page.html -->
+
+<!-- ... Display your existing habits ... -->
+    <div class="row">
+    {% for data in habit_list %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ data.task }}</h5>
+                <p class="card-text">
+                    Periodicity: {{ data.periodicity }} {{ data.frequency }}
+                <hr>
+                    Current Streak: {{ data.current_streak }}
+             <hr>
+                    Longest Streak: {{ data.longest_streak }}
+             <hr>
+                    {% if data.broken %}
+                        <h6 class="text-danger title"> Your Streak is Broken.</h6>
+                    {% else %}
+                    {% endif %}
+                </p>
+
+
+                <form method="get" action="{% url 'mark_completed' data.id %}">
+{#                    {% csrf_token %}#}
+
+
+                    {% if data|completed_today:request.user %}
+
+                        <button  class="btn btn-success disabled">
+                              Your Goal Is Achieved.
+                        </button>
+                    {% else %}
+                        <button type="submit" class="btn btn-primary">
+                            Mark Completed
+                        </button>
+                          {% endif %}
+                </form>
+
+{#                {% with completed_tasks=data.completedtask_set.all %}#}
+{#                {% if completed_tasks %}#}
+{#                <h6>Completed Tasks:</h6>#}
+{#                <ul>#}
+{#                    {% for completed_task in completed_tasks %}#}
+{#                    <li>{{ completed_task.completed_date }}</li>#}
+{#                    {% endfor %}#}
+{#                </ul>#}
+{#                {% else %}#}
+{#                <p>No completed tasks.</p>#}
+{#                {% endif %}#}
+{#                {% endwith %}#}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+    </div>
+</div>
+
+<!-- Modal for the habit form -->
+<div class="modal fade" id="habitModal" tabindex="-1" aria-labelledby="habitModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="habitModalLabel">Add Habit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+               <form action="{% url 'habit_add_view' %}" method="post">
+            <div class="modal-body">
+
+                    {% csrf_token %}
+                    {{ form | crispy }}
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save Habit</button>
+            </div>
+               </form>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

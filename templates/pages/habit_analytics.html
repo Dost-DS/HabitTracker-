@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Habit Analytics</h2>
+    <hr>
+    <div>
+        <h3>Habit with Longest Streak:</h3>
+        {% if longest_streak_habit %}
+        <p>{{ longest_streak_habit.task }} - Longest Streak: {{ longest_streak_habit.longest_streak }} days</p>
+        {% else %}
+        <p>No habits found.</p>
+        {% endif %}
+    </div>
+    <div>
+        <h3>Which habits did I struggle most? :</h3>
+        {% if most_broken_streak_habit %}
+        <p>{{ most_broken_streak_habit.task }} - Missed Completions: {{ most_broken_streak_habit.missed_completions }}</p>
+        {% else %}
+        <p>No habits found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
